@@ -42,8 +42,7 @@ class heater(i3.PCell):
             fname                   = '../josep/thermo_optic_phase_shifter.gds'
             heater_gds_lay          = i3.GDSCell( filename=fname ).Layout()
 
-            insts += i3.SRef( name = self.name + '_HEAT',
-                              reference = heater_gds_lay )
+            insts += i3.SRef(name=f'{self.name}_HEAT', reference = heater_gds_lay)
 
             return insts
 

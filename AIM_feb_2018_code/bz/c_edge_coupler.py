@@ -44,12 +44,16 @@ class EdgeCoupler(i3.PCell):
         def _generate_instances(self, insts):
 
             # edge coupler
-            fname                   = os.path.dirname(os.path.realpath(__file__)) + '/gds/aim_edge_coupler_si.gds'
+            fname = f'{os.path.dirname(os.path.realpath(__file__))}/gds/aim_edge_coupler_si.gds'
+
             edge_coupler_gds_lay    = i3.GDSCell( filename=fname ).Layout()
 
-            insts += i3.SRef( name = self.name + '_EDGE_COUPLER',
-                              reference = edge_coupler_gds_lay,
-                              flatten = True )
+            insts += i3.SRef(
+                name=f'{self.name}_EDGE_COUPLER',
+                reference=edge_coupler_gds_lay,
+                flatten=True,
+            )
+
 
             return insts
 
@@ -61,7 +65,7 @@ class EdgeCoupler(i3.PCell):
             # Port 'in' = connecting waveguide
 
             # generate chip/out port
-            edge_coupler_size_inf       = self.instances[ self.name + '_EDGE_COUPLER' ].size_info()
+            edge_coupler_size_inf = self.instances[f'{self.name}_EDGE_COUPLER'].size_info()
             edge_coupler_left_edge_pos  = edge_coupler_size_inf.west
             edge_coupler_mid_y          = edge_coupler_size_inf.center[1]
             ports += i3.OpticalPort( name       = 'out',

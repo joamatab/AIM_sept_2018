@@ -12,7 +12,6 @@ def compile_doc(cls, ignore_properties=[]):
     indent4 = lambda s: indent(s, 4)
     linebreak = '\n'
 
-    lines = []
     if not hasattr(cls, '__doc_src'):
         #first time __doc__ is generated
         #Strip trailing white spaces.
@@ -21,9 +20,7 @@ def compile_doc(cls, ignore_properties=[]):
         cls.__doc_src = doc.strip()
         doc = cls.__doc_src  + linebreak
 
-    lines.append(cls.__doc_src)
-    lines.append("") # add an empty line
-
+    lines = [cls.__doc_src, ""]
     doc = linebreak.join(lines)
 
     from ipkiss.plugins.documentation.example_handler import examples_to_doc

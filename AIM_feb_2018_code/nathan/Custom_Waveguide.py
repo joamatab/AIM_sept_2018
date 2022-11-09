@@ -25,15 +25,13 @@ class CustomWaveguide(i3.PCell):
                                             "to the waveguide going east")
 
         def _default_wg_path(self):
-            sample_wg_path = np.array([[0.0, 0.0],[5.0, 0.0],[10.0, 0.0],[15.0,0.0]],np.float_)
-            return sample_wg_path
+            return np.array([[0.0, 0.0],[5.0, 0.0],[10.0, 0.0],[15.0,0.0]],np.float_)
 
         def _default_wg_width(self):
             width = i3.TECH.WG.CORE_WIDTH
             size = self.wg_path.shape
             length = size[0]
-            sample_wg_width = width*np.ones([length],np.float_)
-            return sample_wg_width
+            return width*np.ones([length],np.float_)
 
         def _default_wg_angles(self):
             length, numdim = self.wg_path.shape
@@ -46,14 +44,12 @@ class CustomWaveguide(i3.PCell):
             return angle
 
         def _default_start_angle(self):
-            start_angle = int(np.round(self.wg_angles[0]/(np.pi/2)))*90.0
-            return start_angle
+            return int(np.round(self.wg_angles[0]/(np.pi/2)))*90.0
 
         def _default_end_angle(self):
             size = self.wg_angles.shape
             length = size[0]
-            end_angle = int(np.round(self.wg_angles[length-1]/(np.pi/2)))*90.0
-            return end_angle
+            return int(np.round(self.wg_angles[length-1]/(np.pi/2)))*90.0
 
 
         def validate_properties(self):

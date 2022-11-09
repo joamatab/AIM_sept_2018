@@ -23,42 +23,35 @@ class SerpGratingArray(i3.PCell):
     flyback = i3.ChildCellProperty(doc="Flyback waveguide cell")
 
     def _default_wg_temp(self):
-        wg_temp = StripWgTemplate(name=self.name+"_WgTemplate")
-        return wg_temp
+        return StripWgTemplate(name=f"{self.name}_WgTemplate")
 
     def _default_bend(self):
         if self.bend_type is "default":
-            bend = i3.Waveguide(name=self.name+"_Bend", trace_template=self.wg_temp)
-        else:
-            from Custom_Waveguide import CustomWaveguide
-            bend = CustomWaveguide(name=self.name+"_Bend")
-        return bend
+            return i3.Waveguide(name=f"{self.name}_Bend", trace_template=self.wg_temp)
+        from Custom_Waveguide import CustomWaveguide
+        return CustomWaveguide(name=f"{self.name}_Bend")
 
     def _default_taper_swg(self):
         if self.taper_type is "default":
             from Linear_Taper import LinearTaper
-            taper = LinearTaper(name=self.name+"_SwgTaper")
+            return LinearTaper(name=f"{self.name}_SwgTaper")
         else:
             from Custom_Waveguide import CustomWaveguide
-            taper = CustomWaveguide(name=self.name+"_SwgTaper")
-        return taper
+            return CustomWaveguide(name=f"{self.name}_SwgTaper")
 
     def _default_taper_flyback(self):
         if self.taper_type is "default":
             from Linear_Taper import LinearTaper
-            taper = LinearTaper(name=self.name+"_FlybackTaper")
+            return LinearTaper(name=f"{self.name}_FlybackTaper")
         else:
             from Custom_Waveguide import CustomWaveguide
-            taper = CustomWaveguide(name=self.name + "_FlybackTaper")
-        return taper
+            return CustomWaveguide(name=f"{self.name}_FlybackTaper")
 
     def _default_swg(self):
-        swg = SidewallGratingWg(name=self.name+"_SidewallGratingWg")
-        return swg
+        return SidewallGratingWg(name=f"{self.name}_SidewallGratingWg")
 
     def _default_flyback(self):
-        flyback = i3.Waveguide(name=self.name+"_FlybackWg", trace_template=self.wg_temp)
-        return flyback
+        return i3.Waveguide(name=f"{self.name}_FlybackWg", trace_template=self.wg_temp)
 
     class Layout(i3.LayoutView):
 
@@ -81,8 +74,7 @@ class SerpGratingArray(i3.PCell):
                                           doc="Sidewall grating pitch (center-to-center distance of sidewall grating waveguides)")
         spacing = i3.PositiveNumberProperty(doc="Gap between sidewall grating waveguides and flyback waveguides")
         def _default_spacing(self):
-            spacing = (self.pitch - self.grat_wg_width - self.flyback_wg_width) / 2
-            return spacing
+            return (self.pitch - self.grat_wg_width - self.flyback_wg_width) / 2
         length = i3.PositiveNumberProperty(default=800.0, doc="Length of straight (untapered) waveguide sections")
         numrows = i3.PositiveIntProperty(default=32, doc="Number of sidewall grating/flyback waveguide pairs in the array")
 
@@ -96,24 +88,16 @@ class SerpGratingArray(i3.PCell):
         taper_width_swg = i3.NumpyArrayProperty(doc="List of taper widths normal to each point on the path (bend to sidewall grating waveguide)")
 
         def _default_taper_path_flyback(self):
-            #Default is a straight linear taper
-            path = np.array([[0.0, 0.0],[self.taper_length, 0.0]],np.float_)
-            return path
+            return np.array([[0.0, 0.0],[self.taper_length, 0.0]],np.float_)
 
         def _default_taper_width_flyback(self):
-            # Default is a straight linear taper
-            widths = np.array([self.bend_width, self.flyback_wg_width],np.float_)
-            return widths
+            return np.array([self.bend_width, self.flyback_wg_width],np.float_)
 
         def _default_taper_path_swg(self):
-            #Default is a straight linear taper
-            path = np.array([[0.0, 0.0],[self.taper_length, 0.0]],np.float_)
-            return path
+            return np.array([[0.0, 0.0],[self.taper_length, 0.0]],np.float_)
 
         def _default_taper_width_swg(self):
-            # Default is a straight linear taper
-            widths = np.array([self.bend_width, self.grat_wg_width],np.float_)
-            return widths
+            return np.array([self.bend_width, self.grat_wg_width],np.float_)
 
         # Bend properties
         # Properties used for bend_type = "default"
@@ -224,9 +208,24 @@ class SerpGratingArray(i3.PCell):
                 t_taper_swg_w = vector_match_transform(taper_swg_l.ports["out"], swg_l.ports['in']) + t_swg
                 t_taper_swg_e = vector_match_transform(taper_swg_l.ports["out"], swg_l.ports['out'], mirrored=True) + t_swg
                 # Add instances (for all numrows)
-                insts += i3.SRef(reference=swg_l, name="SidewallGratWg" + str(ii), transformation=t_swg)
-                insts += i3.SRef(reference=taper_swg_l, name="SwgTaper_West" + str(ii), transformation=t_taper_swg_w)
-                insts += i3.SRef(reference=taper_swg_l, name="SwgTaper_East" + str(ii), transformation=t_taper_swg_e)
+                insts += i3.SRef(
+                    reference=swg_l,
+                    name=f"SidewallGratWg{str(ii)}",
+                    transformation=t_swg,
+                )
+
+                insts += i3.SRef(
+                    reference=taper_swg_l,
+                    name=f"SwgTaper_West{str(ii)}",
+                    transformation=t_taper_swg_w,
+                )
+
+                insts += i3.SRef(
+                    reference=taper_swg_l,
+                    name=f"SwgTaper_East{str(ii)}",
+                    transformation=t_taper_swg_e,
+                )
+
                 if ii < (self.numrows - 1):
                     # Find component translations (for numrows-1)
                     flyback_offset = self.grat_wg_width / 2 + self.spacing + self.flyback_wg_width / 2
@@ -237,17 +236,40 @@ class SerpGratingArray(i3.PCell):
                     t_bend_e = i3.VMirror() + vector_match_transform(bend_l.ports['in'], taper_swg_l.ports["in"],mirrored=True) + t_taper_swg_e
                     t_bend_w = i3.VMirror() + vector_match_transform(bend_l.ports['out'], taper_flyback_l.ports["in"]) + t_taper_flyback_w + i3.Translation((0.0,self.pitch))
                     # Add instances (for numrows-1)
-                    insts += i3.SRef(reference=flyback_l, name="FlybackWg" + str(ii), transformation=t_flyback)
-                    insts += i3.SRef(reference=taper_flyback_l, name="FlybackTaper_West" + str(ii),
-                                           transformation=t_taper_flyback_w)
-                    insts += i3.SRef(reference=taper_flyback_l, name="FlybackTaper_East" + str(ii),
-                                           transformation=t_taper_flyback_e)
-                    insts += i3.SRef(reference=bend_l, name="Bend_West" + str(ii), transformation=t_bend_w)
-                    insts += i3.SRef(reference=bend_l, name="Bend_East" + str(ii), transformation=t_bend_e)
+                    insts += i3.SRef(
+                        reference=flyback_l,
+                        name=f"FlybackWg{str(ii)}",
+                        transformation=t_flyback,
+                    )
+
+                    insts += i3.SRef(
+                        reference=taper_flyback_l,
+                        name=f"FlybackTaper_West{str(ii)}",
+                        transformation=t_taper_flyback_w,
+                    )
+
+                    insts += i3.SRef(
+                        reference=taper_flyback_l,
+                        name=f"FlybackTaper_East{str(ii)}",
+                        transformation=t_taper_flyback_e,
+                    )
+
+                    insts += i3.SRef(
+                        reference=bend_l,
+                        name=f"Bend_West{str(ii)}",
+                        transformation=t_bend_w,
+                    )
+
+                    insts += i3.SRef(
+                        reference=bend_l,
+                        name=f"Bend_East{str(ii)}",
+                        transformation=t_bend_e,
+                    )
+
 
             return insts
 
         def _generate_ports(self, ports):
             ports += self.instances["SidewallGratWg0"].ports["in"]
-            ports += self.instances["SidewallGratWg"+str(self.numrows-1)].ports["out"]
+            ports += self.instances[f"SidewallGratWg{str(self.numrows - 1)}"].ports["out"]
             return ports

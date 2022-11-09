@@ -110,7 +110,7 @@ style_set += [(PPLayer(TECH.PROCESS.WG, TECH.PURPOSE.CLADDING), DISPLAY_CYAN),
               (PPLayer(TECH.PROCESS.FC, TECH.PURPOSE.TRENCH), DISPLAY_SANGRIA),
               (PPLayer(TECH.PROCESS.FC, TECH.PURPOSE.HOLE), DISPLAY_SANGRIA),
               (PPLayer(TECH.PROCESS.FC, TECH.PURPOSE.TRACE), DISPLAY_RED),
-                            
+
               (PPLayer(TECH.PROCESS.SKT, TECH.PURPOSE.CLADDING), DISPLAY_GREEN),
               (PPLayer(TECH.PROCESS.SKT, TECH.PURPOSE.CORE), DISPLAY_DARKSEY_GREEN),
               (PPLayer(TECH.PROCESS.SKT, TECH.PURPOSE.TRENCH), DISPLAY_DARKGREEN),
@@ -151,9 +151,9 @@ style_set += [(PPLayer(TECH.PROCESS.WG, TECH.PURPOSE.CLADDING), DISPLAY_CYAN),
               (PPLayer(TECH.PROCESS.EXPO, TECH.PURPOSE.DRAWING), DISPLAY_BLUE),
               (PPLayer(TECH.PROCESS.LPASS, TECH.PURPOSE.DRAWING), DISPLAY_GREEN_SPARSE),
               (PPLayer(TECH.PROCESS.PASS2, TECH.PURPOSE.DRAWING), DISPLAY_PURPLE_SPARSE),
-              
+
               (PPLayer(TECH.PROCESS.TRENCH, TECH.PURPOSE.DRAWING), DISPLAY_BLUE),
-              
+
               (PPLayer(TECH.PROCESS.NONE, TECH.PURPOSE.OPT_DUM), DISPLAY_SCARLET),
               (PPLayer(TECH.PROCESS.NONE, TECH.PURPOSE.LOGOTXT), DISPLAY_COPPER),
               (PPLayer(TECH.PROCESS.NONE, TECH.PURPOSE.NOMET), DISPLAY_DARKSEY_GREEN_SPARSE),
@@ -171,12 +171,19 @@ style_set += [(PPLayer(TECH.PROCESS.WG, TECH.PURPOSE.CLADDING), DISPLAY_CYAN),
 
 from ipkiss.visualisation.color import Color
 from numpy import linspace
-style_set += [(i, DisplayStyle(color=Color(name="gray_" + str(i),      # Visualization for simple Layers which may be present
-                                           red=c_val,
-                                           green=c_val,
-                                           blue=c_val),
-                               alpha=.5))
-              for i, c_val in enumerate(linspace(.9, 0.0, num=256))]
+style_set += [
+    (
+        i,
+        DisplayStyle(
+            color=Color(
+                name=f"gray_{str(i)}", red=c_val, green=c_val, blue=c_val
+            ),
+            alpha=0.5,
+        ),
+    )
+    for i, c_val in enumerate(linspace(0.9, 0.0, num=256))
+]
+
 
 TECH.DISPLAY.DEFAULT_DISPLAY_STYLE_SET = style_set   # required
 

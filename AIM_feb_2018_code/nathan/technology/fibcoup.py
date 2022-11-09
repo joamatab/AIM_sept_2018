@@ -24,24 +24,24 @@ class TechFibCoupTreeStraight(DelayedInitTechnologyTree):
         from picazzo3.traces.wire_wg import WireWaveguideTemplate
         wide_trace_template = WireWaveguideTemplate()
         wide_trace_template.Layout(core_width=10.0, cladding_width=14.0) 
-        
+
         self.SOCKET.TRACE_TEMPLATE = wide_trace_template # Wide trace template.
-        
+
         #TE Grating
         self.GRATING_TE = TechnologyTree()
         self.GRATING_TE.N_O_LINES = 25 # Default number of lines used.
         self.GRATING_TE.PERIOD = 0.63 # Default period used in the grating.
         self.GRATING_TE.LINE_WIDTH = 0.315 # Default linewidth used in the grating.
         self.GRATING_TE.BOX_WIDTH = 14.0 # Default box width 
-        
+
         #TM Grating
         self.GRATING_TM = TechnologyTree()
         self.GRATING_TM.N_O_LINES = 16 # Default number of lines used.
         self.GRATING_TM.PERIOD = 1.080 # Default period used in the grating.
         self.GRATING_TM.LINE_WIDTH = 0.540 # Default linewidth used in the grating.
         self.GRATING_TM.BOX_WIDTH = 14.0   # Default box width 
-        
-        
+
+
         # default
         self.GRATING = self.GRATING_TE
        
@@ -55,22 +55,22 @@ class TechFibcoupTreeCurved(DelayedInitTechnologyTree):
         self.SOCKET.MARGIN_FROM_GRATING = TECH.WG.SHORT_STRAIGHT # Distance between the last grating line and the end of the socket by default
         self.SOCKET.START_TRACE_TEMPLATE = TECH.PCELLS.WG.DEFAULT 
         self.SOCKET.TRANSITION_LENGTH = 5.0
-        
+
         from picazzo3.traces.wire_wg import WireWaveguideTemplate
         wide_trace_template = WireWaveguideTemplate(name="LinearTransitionSocket_WGT")
         wide_trace_template.Layout(core_width=17.0, cladding_width=2 * TECH.WG.TRENCH_WIDTH + 17.0) 
-        
+
         self.SOCKET.WIDE_TRACE_TEMPLATE = wide_trace_template # Wide trace template.
-        
+
         # Grating
-        
+
         self.GRATING = TechnologyTree()
         self.GRATING.PERIOD = 0.63 # Default period used in the grating.
         self.GRATING.FOCAL_DISTANCE = 20.0 # Default focal distance of curved gratings. 
         self.GRATING.BOX_WIDTH = 15.5 # Default box width        
         self.GRATING.N_O_LINES = int(floor(self.GRATING.BOX_WIDTH  / self.GRATING.PERIOD ))
         self.GRATING.START_RADIUS = self.GRATING.FOCAL_DISTANCE  - self.GRATING.BOX_WIDTH / 2.0  # Default first radius of the grating.
-       
+
         self.GRATING.ANGLE_SPAN = 90 # Default angle span of a curved grating when it is not boxed.
 
     
@@ -157,7 +157,7 @@ class TechAdapterTree(DelayedInitTechnologyTree):
         self.IOFIBCOUP.S_BEND_ANGLE = 60.0
         self.IOFIBCOUP.CONNECT_TRANSITION_LENGTH = None # automatic
         self.IOFIBCOUP.FIBER_COUPLER_TRANSITION_LENGTH = None # automatic
-        
+
         self.DEFAULT_ADAPTER = self.IOFIBCOUP
 
 class TechIoFibcoupAdapterPCellTree(DelayedInitTechnologyTree):

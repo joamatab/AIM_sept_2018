@@ -82,30 +82,44 @@ class TaperPair(i3.PCell):
             # generates taper pair
 
             # generate left taper cell
-            taper_layout_left = ParabolicTaper( name=self.name + '_TAPER_L').get_default_view(i3.LayoutView)
+            taper_layout_left = ParabolicTaper(
+                name=f'{self.name}_TAPER_L'
+            ).get_default_view(i3.LayoutView)
+
             taper_layout_left.set( length       = self.taper_prop_dict['length'],
                                    width1       = self.taper_prop_dict['width1'],
                                    width2       = self.taper_prop_dict['width2'],
                                    width_etch   = self.taper_prop_dict['width_etch'] )
 
             # generate right taper cell
-            taper_layout_right = ParabolicTaper( name=self.name + '_TAPER_R').get_default_view(i3.LayoutView)
+            taper_layout_right = ParabolicTaper(
+                name=f'{self.name}_TAPER_R'
+            ).get_default_view(i3.LayoutView)
+
             taper_layout_right.set( length       = self.taper_prop_dict['length'],
                                     width1       = self.taper_prop_dict['width1'],
                                     width2       = self.taper_prop_dict['width2'],
                                     width_etch   = self.taper_prop_dict['width_etch'] )
 
             # draw taper pairs
-            insts   += i3.SRef(name=self.name + '_taper1', reference = taper_layout_left)
+            insts += i3.SRef(name=f'{self.name}_taper1', reference = taper_layout_left)
             t       = i3.vector_match_transform( taper_layout_left.ports['right'],
                                                  taper_layout_right.ports['right'],
                                                  mirrored=True ) + i3.Translation( ( self.connect_length, 0.0 ) )
-            insts   += i3.SRef(name=self.name + '_taper2', reference = taper_layout_right, transformation=t)
+            insts += i3.SRef(
+                name=f'{self.name}_taper2',
+                reference=taper_layout_right,
+                transformation=t,
+            )
+
 
             # route between tapers
             if self.connect_length > 0.0:
-                route_tapers = i3.RouteManhattan(   input_port  = insts[self.name + '_taper1'].ports['right'],
-                                                    output_port = insts[self.name + '_taper2'].ports['right'])
+                route_tapers = i3.RouteManhattan(
+                    input_port=insts[f'{self.name}_taper1'].ports['right'],
+                    output_port=insts[f'{self.name}_taper2'].ports['right'],
+                )
+
 
                 # # make my OWN custom waveguide trace template
                 # wg_trace = f_MyIMECWaveguideTemplate( core_width = taper_layout_left.width2,
@@ -114,10 +128,14 @@ class TaperPair(i3.PCell):
 
 
                 # make waveguide
-                wg = i3.Waveguide(trace_template=StripWgTemplate(), name = self.name + '_WG' )
+                wg = i3.Waveguide(trace_template=StripWgTemplate(), name=f'{self.name}_WG')
 
                 # add wg
-                insts += i3.SRef( name=self.name + 'connect_wg', reference = wg.Layout( shape = route_tapers ) )
+                insts += i3.SRef(
+                    name=f'{self.name}connect_wg',
+                    reference=wg.Layout(shape=route_tapers),
+                )
+
             # end if self.connect_length > 0.0
 
             return insts
@@ -127,14 +145,20 @@ class TaperPair(i3.PCell):
             # add ports 'left' and 'right'
 
             # left port
-            ports += i3.OpticalPort( name='left',
-                                     position=self.instances[self.name + '_taper1'].ports['left'].position,
-                                     angle= 180.0 )
+            ports += i3.OpticalPort(
+                name='left',
+                position=self.instances[f'{self.name}_taper1'].ports['left'].position,
+                angle=180.0,
+            )
+
 
             # right port
-            ports += i3.OpticalPort(name='right',
-                                    position=self.instances[self.name + '_taper2'].ports['left'].position,
-                                    angle=0.0 )
+            ports += i3.OpticalPort(
+                name='right',
+                position=self.instances[f'{self.name}_taper2'].ports['left'].position,
+                angle=0.0,
+            )
+
 
             return ports
 
