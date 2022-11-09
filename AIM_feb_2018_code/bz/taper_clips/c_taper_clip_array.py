@@ -105,7 +105,7 @@ class TaperClipArray(i3.PCell):
 
 
             # add first taper clip
-            tc1_name            = self.name + '_tc1'
+            tc1_name = f'{self.name}_tc1'
             taper_clip_layout   = TaperClip( tc1_name ).get_default_view(i3.LayoutView)
             taper_clip_layout.set(  n_rows                  = n_rows,
                                     n_taper_pairs_per_row   = n_taper_pairs_per_row[0],
@@ -124,7 +124,7 @@ class TaperClipArray(i3.PCell):
 
 
             # add second taper clip
-            tc2_name            = self.name + '_tc2'
+            tc2_name = f'{self.name}_tc2'
             taper_clip_layout   = TaperClip( tc2_name ).get_default_view(i3.LayoutView)
             taper_clip_layout.set(  n_rows                  = n_rows,
                                     n_taper_pairs_per_row   = n_taper_pairs_per_row[1],
@@ -152,7 +152,7 @@ class TaperClipArray(i3.PCell):
 
 
             # add third taper clip
-            tc3_name            = self.name + '_tc3'
+            tc3_name = f'{self.name}_tc3'
             taper_clip_layout   = TaperClip( tc3_name ).get_default_view(i3.LayoutView)
             taper_clip_layout.set(  n_rows                  = n_rows,
                                     n_taper_pairs_per_row   = n_taper_pairs_per_row[2],

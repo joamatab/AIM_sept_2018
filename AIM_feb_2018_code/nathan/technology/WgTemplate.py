@@ -87,14 +87,16 @@ class AIMWGWireWaveguideTemplate(WindowWaveguideTemplate):
                 TECH.PPLAYER.AIM.BM2AMFILL,
                     ]
 
-            windows = []
+            windows = [
+                PathTraceWindow(
+                    layer=pplayer,
+                    start_offset=-0.5 * self.cladding_width,
+                    end_offset=+0.5 * self.cladding_width,
+                    shape_property_name="cladding_shape",
+                )
+                for pplayer in clad_pp_layers_list
+            ]
 
-            # add cladding windows
-            for pplayer in clad_pp_layers_list:
-                windows.append(PathTraceWindow(layer=pplayer,
-                                               start_offset=-0.5 * self.cladding_width,
-                                               end_offset=+0.5 * self.cladding_width,
-                                               shape_property_name="cladding_shape"))
 
             # add core layer
             windows.append(PathTraceWindow( layer           = TECH.PPLAYER.WG.COR,

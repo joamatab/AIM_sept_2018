@@ -83,12 +83,14 @@ class BendClip(i3.PCell):
             arc_path    = path_width[:, :2]
 
             # make a bend woo
-            bend_wg_lay = i3.Waveguide( name = self.name+"_Bend", trace_template = StripWgTemplate() ).get_default_view(i3.LayoutView)
+            bend_wg_lay = i3.Waveguide(
+                name=f"{self.name}_Bend", trace_template=StripWgTemplate()
+            ).get_default_view(i3.LayoutView)
+
             bend_wg_lay.set( shape = arc_path )
 
             # add to insts
-            insts += i3.SRef( name = self.name + '_BEND',
-                              reference = bend_wg_lay )
+            insts += i3.SRef(name=f'{self.name}_BEND', reference = bend_wg_lay)
 
             # list of bend names
             bend_name_A_list = []
@@ -97,12 +99,12 @@ class BendClip(i3.PCell):
             # draw a bunch of bends
             for ii in range(self.n_pairs):
 
-                # make bend A
-                if ii == 0:
                     # place first bend pair
 
                     # make a bend woo
-                    bend_name_A     = self.name + '_BEND_A' + str(ii)
+                bend_name_A = f'{self.name}_BEND_A{str(ii)}'
+                # make bend A
+                if ii == 0:
                     bend_wg_lay_A   = i3.Waveguide( trace_template = StripWgTemplate() ).get_default_view(i3.LayoutView)
                     bend_wg_lay_A.set( shape = arc_path )
 
@@ -113,8 +115,6 @@ class BendClip(i3.PCell):
 
                 else:
 
-                    # make a bend woo
-                    bend_name_A     = self.name + '_BEND_A' + str(ii)
                     bend_wg_lay_A   = i3.Waveguide( trace_template = StripWgTemplate() ).get_default_view(i3.LayoutView)
                     bend_wg_lay_A.set( shape = arc_path )
 
@@ -128,7 +128,7 @@ class BendClip(i3.PCell):
                                       flatten       = True )
 
                 # make another bend woo
-                bend_name_B     = self.name + '_BEND_B' + str(ii)
+                bend_name_B = f'{self.name}_BEND_B{str(ii)}'
                 bend_wg_lay_B   = i3.Waveguide( trace_template = StripWgTemplate() ).get_default_view(i3.LayoutView)
                 bend_wg_lay_B.set( shape = arc_path )
 
@@ -155,14 +155,22 @@ class BendClip(i3.PCell):
             # add ports 'left' and 'right'
 
             # left port
-            ports += i3.OpticalPort( name       = 'in',
-                                     position   = self.instances[ self.name + '_BEND_A0' ].ports['in'].position,
-                                     angle      = 0.0 )
+            ports += i3.OpticalPort(
+                name='in',
+                position=self.instances[f'{self.name}_BEND_A0'].ports['in'].position,
+                angle=0.0,
+            )
+
 
             # right port
-            ports += i3.OpticalPort(name        = 'out',
-                                    position    = self.instances[ self.name + '_BEND_B' + str(self.n_pairs-1) ].ports['out'].position,
-                                    angle       = 180.0 )
+            ports += i3.OpticalPort(
+                name='out',
+                position=self.instances[f'{self.name}_BEND_B{str(self.n_pairs - 1)}']
+                .ports['out']
+                .position,
+                angle=180.0,
+            )
+
 
             return ports
 

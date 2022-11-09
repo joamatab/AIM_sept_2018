@@ -28,10 +28,11 @@ class BezierCurve(object):
 		return [f1, f2, f3, f4]
 	
 	def find_knobs(self):
-		solution  = opt.fsolve( self.cont_eqs, (self.P1[0], self.P1[1], self.P2[0], self.P2[1]), xtol=1e-20)
-		# self.P1 = (solution[0], solution[1])
-		# self.P2 = (solution[2], solution[3])
-		return solution
+		return opt.fsolve(
+			self.cont_eqs,
+			(self.P1[0], self.P1[1], self.P2[0], self.P2[1]),
+			xtol=1e-20,
+		)
 		
 	def bezier_coords(self):
 		t = np.linspace(0.0, 1.0, self.N)
@@ -45,5 +46,5 @@ class BezierCurve(object):
 			B_x.append((1.0 - t[ii])**3.0*self.P0[0] + 3.0*(1.0-t[ii])**2.0*t[ii]*self.P1[0] + 3.0*(1.0-t[ii])*t[ii]**2.0*self.P2[0] + t[ii]**3.0*self.P3[0])
 			B_y.append((1.0 - t[ii])**3.0*self.P0[1] + 3.0*(1.0-t[ii])**2.0*t[ii]*self.P1[1] + 3.0*(1.0-t[ii])*t[ii]**2.0*self.P2[1] + t[ii]**3.0*self.P3[1])
 			B.append((B_x[ii], B_y[ii]))
-		
+
 		return B

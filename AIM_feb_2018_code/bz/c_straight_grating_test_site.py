@@ -121,14 +121,17 @@ class StraightGratingTestSite(i3.PCell):
             chip_edge_west = main_chip_gds_lay_size_info.west
 
             # make edge coupler
-            edge_coupler_gds_lay = EdgeCoupler(name=self.name + 'edge_coupler_mmmmffff').Layout()
+            edge_coupler_gds_lay = EdgeCoupler(
+                name=f'{self.name}edge_coupler_mmmmffff'
+            ).Layout()
+
 
             # add and route input/west edgecoupler
             # position edge coupler on west side of chip
             chip_port_west              = i3.OpticalPort(  position = ( chip_edge_west, 0.0 ), angle_deg = 0.0 )
             edge_coupler_west_port      = edge_coupler_gds_lay.ports['out']
             t                           = i3.vector_match_transform( edge_coupler_west_port, chip_port_west )
-            edge_coupler_west_name      = self.name + '_EDGE_COUPLER_WEST'
+            edge_coupler_west_name = f'{self.name}_EDGE_COUPLER_WEST'
             west_edge_coupler = i3.SRef( name              = edge_coupler_west_name,
                               reference         = edge_coupler_gds_lay,
                               transformation    = t,
@@ -142,7 +145,7 @@ class StraightGratingTestSite(i3.PCell):
                                length       = 10.0 )
             t = i3.vector_match_transform(  lin_taper_lay.ports['in'],
                                             west_edge_coupler.ports['in'] )
-            lin_taper_lay_name = self.name + '_EDGETAPER_WEST'
+            lin_taper_lay_name = f'{self.name}_EDGETAPER_WEST'
             insts += i3.SRef( name              = lin_taper_lay_name,
                               reference         = lin_taper_lay,
                               transformation    = t,
@@ -152,13 +155,16 @@ class StraightGratingTestSite(i3.PCell):
             taper_length    = 79.0      # 79 is the best according to deniz' sims
             width_etch      = 4.0
             wg_width        = 0.5
-            taper_swg_lay_1 = ParabolicTaper( name = self.name + '_TAPER_1' ).get_default_view(i3.LayoutView)
+            taper_swg_lay_1 = ParabolicTaper(
+                name=f'{self.name}_TAPER_1'
+            ).get_default_view(i3.LayoutView)
+
             taper_swg_lay_1.set(    length      = taper_length,
                                     width1      = wg_width,
                                     width2      = self.grat_wg_width,
                                     width_etch  = width_etch
                                 )
-            taper_swg_name_1 = self.name + '_TAPER_1'
+            taper_swg_name_1 = f'{self.name}_TAPER_1'
             t = i3.vector_match_transform( taper_swg_lay_1.ports['left'],
                                            insts[ lin_taper_lay_name ].ports['out'] )
             insts += i3.SRef( name              = taper_swg_name_1,
@@ -169,7 +175,7 @@ class StraightGratingTestSite(i3.PCell):
 
             # add grating array
             # make grating layout
-            swg_l_name = self.name + '_SWG'
+            swg_l_name = f'{self.name}_SWG'
             if self.grating_type == 'one_sidewall':
                 # single sidewall grating
                 swg_l = SidewallGratingWg( name = swg_l_name ).get_default_view(i3.LayoutView)
@@ -222,7 +228,7 @@ class StraightGratingTestSite(i3.PCell):
                                                            angle_deg = 180.0 )
             edge_coupler_east_port      = edge_coupler_gds_lay.ports['out']
             t                           = i3.vector_match_transform( edge_coupler_east_port, chip_port_east, mirrored = True )
-            edge_coupler_east_name      = self.name + '_EDGE_COUPLER_EAST'
+            edge_coupler_east_name = f'{self.name}_EDGE_COUPLER_EAST'
             east_edge_coupler =  i3.SRef( name              = edge_coupler_east_name,
                               reference         = edge_coupler_gds_lay,
                               transformation    = t,
@@ -236,7 +242,7 @@ class StraightGratingTestSite(i3.PCell):
                                length       = 10.0 )
             t = i3.vector_match_transform(  lin_taper_lay.ports['in'],
                                             east_edge_coupler.ports['in'], mirrored = True )
-            lin_taper_lay_name_east = self.name + '_EDGETAPER_EAST'
+            lin_taper_lay_name_east = f'{self.name}_EDGETAPER_EAST'
             insts += i3.SRef( name              = lin_taper_lay_name_east,
                               reference         = lin_taper_lay,
                               transformation    = t,
@@ -244,13 +250,16 @@ class StraightGratingTestSite(i3.PCell):
 
 
             # east taper
-            taper_swg_lay_2 = ParabolicTaper( name = self.name + '_TAPER_2' ).get_default_view(i3.LayoutView)
+            taper_swg_lay_2 = ParabolicTaper(
+                name=f'{self.name}_TAPER_2'
+            ).get_default_view(i3.LayoutView)
+
             taper_swg_lay_2.set(    length      = taper_length,
                                     width1      = wg_width,
                                     width2      = self.grat_wg_width,
                                     width_etch  = width_etch
                                     )
-            taper_swg_name_2 = self.name + '_TAPER_2'
+            taper_swg_name_2 = f'{self.name}_TAPER_2'
             t = i3.vector_match_transform( taper_swg_lay_2.ports['left'],
                                            insts[ lin_taper_lay_name_east ].ports['out'],
                                            mirrored = True )
@@ -263,7 +272,7 @@ class StraightGratingTestSite(i3.PCell):
             # connect with fat waveguide, which is just a sidewall grating with no amp
             connect_len     = insts[taper_swg_name_2].ports['right'].position[0] - insts[swg_l_name].ports['out'].position[0]
             fat_wg_l        = SidewallGratingWg().get_default_view(i3.LayoutView)
-            fat_wg_l_name   = self.name + '_FAT_WG_CON'
+            fat_wg_l_name = f'{self.name}_FAT_WG_CON'
             fat_wg_l.set(period=self.period, duty_cycle=self.duty_cycle, grating_amp=0.0, wg_width=self.grat_wg_width,
                         length=connect_len, both_sides = False )
             t = i3.vector_match_transform( fat_wg_l.ports['in'],
@@ -283,14 +292,24 @@ class StraightGratingTestSite(i3.PCell):
             # add ports 'left' and 'right'
 
             # left port
-            ports += i3.OpticalPort( name       = 'in',
-                                     position   = self.instances[ self.name + '_EDGETAPER_WEST' ].ports['in'].position,
-                                     angle      = 180.0 )
+            ports += i3.OpticalPort(
+                name='in',
+                position=self.instances[f'{self.name}_EDGETAPER_WEST']
+                .ports['in']
+                .position,
+                angle=180.0,
+            )
+
 
             # right port
-            ports += i3.OpticalPort(name        = 'out',
-                                    position    = self.instances[ self.name + '_EDGETAPER_EAST' ].ports['in'].position,
-                                    angle       = 0.0 )
+            ports += i3.OpticalPort(
+                name='out',
+                position=self.instances[f'{self.name}_EDGETAPER_EAST']
+                .ports['in']
+                .position,
+                angle=0.0,
+            )
+
 
             return ports
 

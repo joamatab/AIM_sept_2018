@@ -57,9 +57,6 @@ class S_wg(object):
 
 
 
-        coors = np.vstack([x, y]).transpose()
-
-
-        return coors
+        return np.vstack([x, y]).transpose()
 #s=S_wg()
 #s.coords()

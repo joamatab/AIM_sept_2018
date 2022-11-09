@@ -88,13 +88,16 @@ class TaperPairRow(i3.PCell):
                 # for each pair
 
                 # draw taper pair layout
-                tp_lay = TaperPair( name = self.name + '_tp' + str(ii) ).get_default_view(i3.LayoutView)
+                tp_lay = TaperPair(name=f'{self.name}_tp{str(ii)}').get_default_view(
+                    i3.LayoutView
+                )
+
                 tp_lay.set(
                             taper_prop_dict = self.taper_prop_dict,
                             connect_length  = self.connect_length )
 
                 # set name
-                tp_name = 'tp' + str(ii)
+                tp_name = f'tp{str(ii)}'
                 tp_name_list.append( tp_name )
 
                 # set transformation
@@ -103,7 +106,7 @@ class TaperPairRow(i3.PCell):
                     # set transform
                     t = i3.vector_match_transform(  tp_lay.ports['left'],
                                                     insts[ tp_name_list[ii - 1] ].ports['right']) \
-                                                    + i3.Translation( ( self.pair_connect_length, 0.0 ) )
+                                                            + i3.Translation( ( self.pair_connect_length, 0.0 ) )
 
                     # print t
 
@@ -119,10 +122,18 @@ class TaperPairRow(i3.PCell):
                     #                                       cladding_width = self.taper_prop_dict['width1'] + 2.0*self.taper_prop_dict['width_etch'] )
 
                     # make waveguide
-                    wg = i3.Waveguide(trace_template=StripWgTemplate(), name = self.name + '_WG' + str(ii))
+                    wg = i3.Waveguide(
+                        trace_template=StripWgTemplate(),
+                        name=f'{self.name}_WG{str(ii)}',
+                    )
+
 
                     # add wg
-                    insts += i3.SRef( name=self.name + 'connect_wg' + str(ii), reference = wg.Layout( shape = route_wg ) )
+                    insts += i3.SRef(
+                        name=f'{self.name}connect_wg{str(ii)}',
+                        reference=wg.Layout(shape=route_wg),
+                    )
+
 
                 else:
                     # draw first taper pair
@@ -131,7 +142,7 @@ class TaperPairRow(i3.PCell):
                     # DEBUG
                     # print insts
 
-                # end if else
+                    # end if else
 
             return insts
         # end _generate_instances()
@@ -145,9 +156,14 @@ class TaperPairRow(i3.PCell):
                                      angle= 180.0 )
 
             # right port
-            ports += i3.OpticalPort(name='right',
-                                    position=self.instances[ 'tp' + str(self.n_pairs-1) ].ports['right'].position,
-                                    angle=0.0 )
+            ports += i3.OpticalPort(
+                name='right',
+                position=self.instances[f'tp{str(self.n_pairs - 1)}']
+                .ports['right']
+                .position,
+                angle=0.0,
+            )
+
 
             return ports
 

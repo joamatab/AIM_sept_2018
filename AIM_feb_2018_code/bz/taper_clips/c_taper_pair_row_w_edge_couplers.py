@@ -102,7 +102,8 @@ class TaperPairRowEdgeCouplers(i3.PCell):
 
             # load the aim gds just to get its positions and stuff
             # main chip GDS
-            fname               = os.path.dirname(os.path.realpath(__file__)) + '/gds/ap_suny_v20a_chipframe.gds'
+            fname = f'{os.path.dirname(os.path.realpath(__file__))}/gds/ap_suny_v20a_chipframe.gds'
+
             main_chip_gds_cell  = i3.GDSCell( filename=fname )
 
             # grab layout size info
@@ -115,14 +116,14 @@ class TaperPairRowEdgeCouplers(i3.PCell):
 
             # make edge coupler and add to layout
             # edge coupler
-            edge_coupler_gds_lay = EdgeCoupler(name=self.name + 'edge_coupler_si').Layout()
+            edge_coupler_gds_lay = EdgeCoupler(name=f'{self.name}edge_coupler_si').Layout()
 
             # add and route input/west edgecoupler
             # position edge coupler on west side of chip
             chip_port_west              = i3.OpticalPort(  position = ( chip_edge_west, 0.0 ), angle_deg = 0.0 )
             edge_coupler_west_port      = edge_coupler_gds_lay.ports['out']
             t                           = i3.vector_match_transform( edge_coupler_west_port, chip_port_west )
-            edge_coupler_west_name      = self.name + '_EDGE_COUPLER_WEST'
+            edge_coupler_west_name = f'{self.name}_EDGE_COUPLER_WEST'
             west_edge_coupler = i3.SRef( name              = edge_coupler_west_name,
                               reference         = edge_coupler_gds_lay,
                               transformation    = t,
@@ -135,14 +136,14 @@ class TaperPairRowEdgeCouplers(i3.PCell):
                                length       = 10.0 )
             t = i3.vector_match_transform(  lin_taper_lay.ports['in'],
                                             west_edge_coupler.ports['in'] )
-            lin_taper_lay_name = self.name + '_EDGETAPER_WEST'
+            lin_taper_lay_name = f'{self.name}_EDGETAPER_WEST'
             insts += i3.SRef( name              = lin_taper_lay_name,
                               reference         = lin_taper_lay,
                               transformation    = t,
                               flatten           = True )
 
             # add taper rows
-            taper_row_name  = self.name + '_TAPERSSSSSSSS'
+            taper_row_name = f'{self.name}_TAPERSSSSSSSS'
             t = i3.vector_match_transform( tp_rows_layout.ports['left'],
                                            insts[lin_taper_lay_name].ports['out']
                                             )
@@ -155,7 +156,7 @@ class TaperPairRowEdgeCouplers(i3.PCell):
             chip_port_east              = i3.OpticalPort(  position = ( chip_edge_east, 0.0 ), angle_deg = 180.0 )
             edge_coupler_east_port      = edge_coupler_gds_lay.ports['out']
             t                           = i3.vector_match_transform( edge_coupler_east_port, chip_port_east, mirrored = True )
-            edge_coupler_east_name      = self.name + '_EDGE_COUPLER_EAST'
+            edge_coupler_east_name = f'{self.name}_EDGE_COUPLER_EAST'
             east_edge_coupler =  i3.SRef( name              = edge_coupler_east_name,
                               reference         = edge_coupler_gds_lay,
                               transformation    = t,
@@ -168,7 +169,7 @@ class TaperPairRowEdgeCouplers(i3.PCell):
                                length       = 10.0 )
             t = i3.vector_match_transform(  lin_taper_lay.ports['in'],
                                             east_edge_coupler.ports['in'], mirrored = True )
-            lin_taper_lay_name = self.name + '_EDGETAPER_EAST'
+            lin_taper_lay_name = f'{self.name}_EDGETAPER_EAST'
             insts += i3.SRef( name              = lin_taper_lay_name,
                               reference         = lin_taper_lay,
                               transformation    = t,
@@ -177,7 +178,7 @@ class TaperPairRowEdgeCouplers(i3.PCell):
             # route the east coupler to the east edge of the taper pairs
             route_wg_row_taper  = i3.Shape([ insts[taper_row_name].ports['right'].position,
                                              insts[lin_taper_lay_name].ports['out'].position ])
-            wg_name     = self.name + '_WG'
+            wg_name = f'{self.name}_WG'
             wg_lay      = i3.Waveguide( trace_template = StripWgTemplate(), name = wg_name ).get_default_view(i3.LayoutView)
             wg_lay.set( shape = route_wg_row_taper )
             insts           += i3.SRef( name        = wg_name,
@@ -192,14 +193,24 @@ class TaperPairRowEdgeCouplers(i3.PCell):
             # add ports 'left' and 'right'
 
             # left port
-            ports += i3.OpticalPort( name       = 'left',
-                                     position   = self.instances[ self.name + '_EDGETAPER_WEST' ].ports['in'].position,
-                                     angle      = 180.0 )
+            ports += i3.OpticalPort(
+                name='left',
+                position=self.instances[f'{self.name}_EDGETAPER_WEST']
+                .ports['in']
+                .position,
+                angle=180.0,
+            )
+
 
             # right port
-            ports += i3.OpticalPort(name        = 'right',
-                                    position    = self.instances[ self.name + '_EDGETAPER_EAST' ].ports['out'].position,
-                                    angle       = 0.0 )
+            ports += i3.OpticalPort(
+                name='right',
+                position=self.instances[f'{self.name}_EDGETAPER_EAST']
+                .ports['out']
+                .position,
+                angle=0.0,
+            )
+
 
             return ports
 

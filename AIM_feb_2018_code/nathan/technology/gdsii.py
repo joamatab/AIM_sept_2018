@@ -72,7 +72,7 @@ TECH.GDSII.LAYERTABLE = {                                     # GDSII layer tabl
     (TECH.PROCESS.M1, TECH.PURPOSE.NOFILL     ): ( 11, 9),
     (TECH.PROCESS.M1, TECH.PURPOSE.PERF       ): ( 11, 11),
     (TECH.PROCESS.M1, TECH.PURPOSE.NO_PERF       ): ( 11, 12),
-    
+
     (TECH.PROCESS.VIA12, TECH.PURPOSE.DRAWING  ): ( 12, 0),
 
     (TECH.PROCESS.M2, TECH.PURPOSE.DRAWING    ): ( 13, 1),
@@ -141,7 +141,7 @@ TECH.GDSII.LAYERTABLE = {                                     # GDSII layer tabl
     (TECH.PROCESS.NONE, TECH.PURPOSE.LOL7250           ): (725, 0),
 
     #CHANGES END HERE
-    
+
     # required tech keys for Ipkiss compatibility
     # required for Ipkiss.eda compatibility
     (TECH.PROCESS.WG, TECH.PURPOSE.TRACE           ): (37, 8),

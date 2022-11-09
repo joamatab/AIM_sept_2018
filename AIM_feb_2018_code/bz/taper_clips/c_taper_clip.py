@@ -119,8 +119,11 @@ class TaperClip(i3.PCell):
             #                                      cladding_width=self.taper_prop_dict['width1'] + 2.0 * self.taper_prop_dict['width_etch'])
 
             # make waveguide
-            wg = i3.Waveguide(trace_template=StripWgTemplate(), name=self.name + '_WG')
-            wg_round = i3.RoundedWaveguide(trace_template=StripWgTemplate(), name=self.name + '_WG_ROUND')
+            wg = i3.Waveguide(trace_template=StripWgTemplate(), name=f'{self.name}_WG')
+            wg_round = i3.RoundedWaveguide(
+                trace_template=StripWgTemplate(), name=f'{self.name}_WG_ROUND'
+            )
+
 
             # how much to translate bends left/right
             # t_left = i3.Translation((self.bend_radius + (float(self.n_rows)/2.0) ))
@@ -131,7 +134,10 @@ class TaperClip(i3.PCell):
             for ii in range(self.n_rows):
 
                 # add rows
-                tp_rows_layout = TaperPairRow( name = self.name + '_TProw' + str(ii) ).get_default_view(i3.LayoutView)
+                tp_rows_layout = TaperPairRow(
+                    name=f'{self.name}_TProw{str(ii)}'
+                ).get_default_view(i3.LayoutView)
+
                 tp_rows_layout.set(
                                     taper_prop_dict     = self.taper_prop_dict,
                                     connect_length      = self.connect_length,
@@ -142,7 +148,7 @@ class TaperClip(i3.PCell):
                 t = i3.Translation( ( 0.0, float(ii) * self.row_spacing ) )
 
                 # place taper pair row
-                tp_row_name = self.name + '_TP_ROW' + str(ii)
+                tp_row_name = f'{self.name}_TP_ROW{str(ii)}'
                 insts       += i3.SRef( name=tp_row_name,
                                         reference=tp_rows_layout,
                                         transformation=t )
@@ -150,10 +156,10 @@ class TaperClip(i3.PCell):
                 # draw connecting arcs
                 if ii > 0:
 
-                    if (ii % 2) == 1:
                         # bend on the right
                         # make shape bend
-                        row_name = self.name + '_TP_ROW' + str(ii-1)
+                    row_name = f'{self.name}_TP_ROW{str(ii - 1)}'
+                    if (ii % 2) == 1:
                         shape_bend = i3.ShapeBend( start_point  = insts[ row_name ].ports['right'].position,
                                                    radius       = self.bend_radius,
                                                    start_angle  = -90.05,
@@ -161,8 +167,12 @@ class TaperClip(i3.PCell):
                                                    angle_step   = 0.1 )
 
                         # add 180 deg bend
-                        wg_copy = i3.Waveguide(trace_template=StripWgTemplate(), name=self.name + '_arc_r' + str(ii) )
-                        arc_name = self.name + '_arc' + str(ii)
+                        wg_copy = i3.Waveguide(
+                            trace_template=StripWgTemplate(),
+                            name=f'{self.name}_arc_r{str(ii)}',
+                        )
+
+                        arc_name = f'{self.name}_arc{str(ii)}'
                         insts += i3.SRef( name              = arc_name,
                                           reference         = wg_copy.Layout(shape=shape_bend),
                                           transformation    = t_right )
@@ -187,13 +197,20 @@ class TaperClip(i3.PCell):
                         s = i3.Shape(bez_coords)
 
                         # add bottom wg connector
-                        wg_copy = i3.Waveguide(trace_template=StripWgTemplate(), name=self.name + '_arc_r_con' + str(ii) )
-                        insts += i3.SRef(name=self.name + '_con_wg_r_b_' + str(ii),
-                                         reference=wg_copy.Layout(shape=s))
+                        wg_copy = i3.Waveguide(
+                            trace_template=StripWgTemplate(),
+                            name=f'{self.name}_arc_r_con{str(ii)}',
+                        )
+
+                        insts += i3.SRef(
+                            name=f'{self.name}_con_wg_r_b_{str(ii)}',
+                            reference=wg_copy.Layout(shape=s),
+                        )
+
 
 
                         # connect top wgs
-                        next_row_name = self.name + '_TP_ROW' + str(ii)
+                        next_row_name = f'{self.name}_TP_ROW{str(ii)}'
                         in_port_coords  = insts[arc_name].ports['out'].position
                         out_port_coords = insts[next_row_name].ports['right'].position
 
@@ -211,15 +228,19 @@ class TaperClip(i3.PCell):
                         s = i3.Shape(bez_coords)
 
                         # add wg bend
-                        wg_copy = i3.Waveguide(trace_template=StripWgTemplate(), name=self.name + '_bez_r' + str(ii) )
-                        insts += i3.SRef( name          = self.name + '_con_wg_r_t_' + str(ii),
-                                          reference     = wg_copy.Layout( shape = s ) )
+                        wg_copy = i3.Waveguide(
+                            trace_template=StripWgTemplate(),
+                            name=f'{self.name}_bez_r{str(ii)}',
+                        )
+
+                        insts += i3.SRef(
+                            name=f'{self.name}_con_wg_r_t_{str(ii)}',
+                            reference=wg_copy.Layout(shape=s),
+                        )
+
 
 
                     else:
-                        # bend on the left
-                        # make shape bend
-                        row_name = self.name + '_TP_ROW' + str(ii - 1)
                         shape_bend = i3.ShapeBend(
                             start_point     = (insts[row_name].ports['left'].position),
                             radius          = self.bend_radius,
@@ -229,8 +250,12 @@ class TaperClip(i3.PCell):
                             clockwise       = False )
 
                         # add 180 deg bend
-                        wg_copy = i3.Waveguide(trace_template=StripWgTemplate(), name=self.name + '_arc_l' + str(ii) )
-                        arc_name = self.name + '_arc' + str(ii)
+                        wg_copy = i3.Waveguide(
+                            trace_template=StripWgTemplate(),
+                            name=f'{self.name}_arc_l{str(ii)}',
+                        )
+
+                        arc_name = f'{self.name}_arc{str(ii)}'
                         insts += i3.SRef( name      = arc_name,
                                           reference = wg_copy.Layout(shape=shape_bend),
                                           transformation = t_left )
@@ -255,13 +280,20 @@ class TaperClip(i3.PCell):
                         s = i3.Shape(bez_coords)
 
                         # add bottom wg connector
-                        wg_copy = i3.Waveguide(trace_template=StripWgTemplate(), name=self.name + '_arc_l_con' + str(ii) )
-                        insts += i3.SRef(name=self.name + '_con_wg_l_b_' + str(ii),
-                                         reference=wg_copy.Layout(shape=s))
+                        wg_copy = i3.Waveguide(
+                            trace_template=StripWgTemplate(),
+                            name=f'{self.name}_arc_l_con{str(ii)}',
+                        )
+
+                        insts += i3.SRef(
+                            name=f'{self.name}_con_wg_l_b_{str(ii)}',
+                            reference=wg_copy.Layout(shape=s),
+                        )
+
 
 
                         # connect top wgs
-                        next_row_name   = self.name + '_TP_ROW' + str(ii)
+                        next_row_name = f'{self.name}_TP_ROW{str(ii)}'
                         in_port_coords  = insts[arc_name].ports['in'].position
                         out_port_coords = insts[next_row_name].ports['left'].position
 
@@ -279,13 +311,20 @@ class TaperClip(i3.PCell):
                         s = i3.Shape(bez_coords)
 
                         # add wg bend
-                        wg_copy = i3.Waveguide(trace_template=StripWgTemplate(), name=self.name + '_bez_l' + str(ii) )
-                        insts += i3.SRef( name          = self.name + '_con_wg_l_t_' + str(ii),
-                                          reference     = wg_copy.Layout( shape = s ) )
+                        wg_copy = i3.Waveguide(
+                            trace_template=StripWgTemplate(),
+                            name=f'{self.name}_bez_l{str(ii)}',
+                        )
 
-                    # end if bend
+                        insts += i3.SRef(
+                            name=f'{self.name}_con_wg_l_t_{str(ii)}',
+                            reference=wg_copy.Layout(shape=s),
+                        )
 
-                # end drawing connecting arcs
+
+                            # end if bend
+
+                    # end drawing connecting arcs
 
             # end for ii in range(self.rows)
 
